@@ -41,7 +41,7 @@
             ctx.stroke();
         }
         ctx.restore();
-        
+
         // 刻画分钟
         for (let i = 0; i < 60; i++) {
             ctx.rotate(6 / 180 * Math.PI);
@@ -56,7 +56,14 @@
         }
 
         // 绘制时针分针秒针
-        
+        //首先获取时间
+        let date = new Date();
+        let second = date.getSeconds();
+        let minute = date.getMinutes() + second / 60;
+        let hour = date.getHours() + minute / 60;
+
+        console.log(second,minute,hour);
+
         ctx.restore();
     </script>
 
