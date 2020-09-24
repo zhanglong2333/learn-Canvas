@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    <canvas width="600" height="400"></canvas>
+
+    <script>
+
+        let ctx = document.querySelector('canvas').getContext('2d');
+        
+        //描边矩形
+        ctx.strokeRect(200,100,200,200);
+        // 无填充矩形
+        // ctx.rect(200,100,200,200);
+        // 填充矩形
+        // ctx.fillRect(200,100,200,200);
+        //清除矩形
+        // ctx.clearRect(199.5,99,202,202);
+
+    </script>
+
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid;
+            display: block;
+            margin: 100px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="600" height="400"></canvas>
+    <script>
+        // ctx.arc(200, 200, 100, 0, 360 / 180 * Math.PI, false);
+        // ctx.stroke();
+        let myCanvas = document.querySelector('canvas');
+
+        let ctx = myCanvas.getContext('2d');
+
+        ctx.lineWidth = 3;
+
+        function draw(event) {
+            if (event.clientX - myCanvas.offsetLeft < 0 || event.clientY - myCanvas.offsetTop < 0){
+                return;
+            }
+                ctx.lineTo(event.clientX - myCanvas.offsetLeft, event.clientY - myCanvas.offsetTop);
+            ctx.stroke();
+        }
+
+        document.addEventListener('mousedown', (e) => {
+
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+
+            document.addEventListener('mousemove', draw);
+        })
+
+        document.addEventListener('mouseup', (e) => {
+
+            document.removeEventListener('mousemove', draw)
+        })
+    </script>
+</body>
+
+</html>

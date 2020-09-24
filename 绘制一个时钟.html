@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="600" height="600"></canvas>
+
+    <script>
+        let myCanvas = document.querySelector('canvas');
+        let ctx = myCanvas.getContext('2d');
+        ctx.save();
+        // 移动坐标至圆心
+        ctx.translate(myCanvas.width / 2, myCanvas.height / 2);
+        // 绘制一个圆
+        ctx.arc(0, 0, 230, 0, 2 * Math.PI, false);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#00b5e5'
+        ctx.stroke();
+
+        //刻画小时
+        ctx.save();
+        for (let i = 0; i < 12; i++) {
+            ctx.rotate(30 / 180 * Math.PI);
+            ctx.beginPath();
+            //绘制刻度
+            ctx.moveTo(200, 0);
+            ctx.lineTo(220, 0);
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = '#000';
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+        ctx.restore();
+        
+        // 刻画分钟
+        for (let i = 0; i < 60; i++) {
+            ctx.rotate(6 / 180 * Math.PI);
+            ctx.beginPath();
+            //绘制刻度
+            ctx.moveTo(210, 0);
+            ctx.lineTo(220, 0);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#000';
+            ctx.lineCap = 'round';
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    </script>
+
+
+</body>
+
+</html>

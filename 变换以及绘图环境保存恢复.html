@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="600" height="600"></canvas>
+
+    <script>
+        let ctx = document.querySelector('canvas').getContext('2d');
+
+        // 变换之前保存当前的绘图环境(坐标体系)
+        ctx.save();
+
+
+        // 位移（位移移动的是画布的坐标系）
+        ctx.translate(300, 300);
+        ctx.rotate(42 / 180 * Math.PI);
+        // 旋转   旋转也是旋转画布
+        // ctx.rotate(45 / 180 * Math.PI);
+        ctx.fillRect(0, 0, 200, 200);
+
+
+        //绘制完成之后恢复之前的坐标体系
+        ctx.restore();
+
+
+        ctx.fillRect(0, 0, 200, 100);
+    </script>
+
+
+</body>
+
+</html>

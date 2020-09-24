@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="600" height="400"></canvas>
+    <script>
+        let ctx = document.querySelector('canvas').getContext('2d');
+        let grid = 10;
+        // ctx.moveTo(0,grid);
+        // ctx.lineTo(600,grid);
+        // ctx.strokeStyle = '#f2f2f2';
+        // ctx.stroke();
+        //获取页面的高度和宽度
+        let width = ctx.canvas.width;
+        let height = ctx.canvas.height;
+        let yNum = Math.floor(height / grid);
+        let xNum = Math.floor(width / grid);
+        //绘制Y轴线
+        for (let i = 0; i <= yNum; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, i * grid - 0.5);
+            ctx.lineTo(width, i * grid - 0.5);
+            ctx.strokeStyle = '#f2f2f2';
+            ctx.stroke();
+        }
+        // 绘制X轴线
+        for (let i = 0; i <= xNum; i++) {
+            ctx.beginPath();
+            ctx.moveTo(i * grid - 0.5, 0);
+            ctx.lineTo(i * grid - 0.5, height);
+            ctx.strokeStyle = '#f2f2f2';
+            ctx.stroke();
+        }
+
+
+        //绘制纵向标线
+        ctx.beginPath();
+        ctx.moveTo(50.5, 50);
+        ctx.lineTo(50.5, 350);
+        ctx.strokeStyle = '#000';
+        ctx.stroke();
+        //绘制纵向坐标箭头
+        ctx.beginPath();
+        ctx.moveTo(50.5, 30);
+        ctx.lineTo(45.5, 50.5);
+        ctx.lineTo(55.5, 50.5);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+
+        //绘制横向标线
+        ctx.beginPath();
+        ctx.moveTo(50.5, 350.5);
+        ctx.lineTo(550.5, 350.5);
+        ctx.stroke();
+        //绘制横向坐标箭头
+        ctx.beginPath();
+        ctx.moveTo(570.5, 350.5);
+        ctx.lineTo(550.5, 345.5);
+        ctx.lineTo(550.5, 355.5);
+        ctx.closePath();
+        ctx.stroke();
+        ctx.fill();
+    </script>
+</body>
+
+</html>

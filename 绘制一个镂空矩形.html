@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas{
+            border: 1px solid;
+        }
+    </style>
+</head>
+<body>
+    
+    <canvas width="600" height="600"></canvas>
+
+    <script>
+        let ctx = document.querySelector('canvas').getContext('2d');
+        /*
+        * 非零环绕规则
+        * 从里到外任意拉出去一条线
+        * 根据相交的轨迹 顺时针+1  逆时针-1  如果不是0  就全部填充
+        * 如果是0，那就回事镂空
+        */
+
+        // 绘制外部框
+        ctx.moveTo(100,100);
+        ctx.lineTo(500,100);
+        ctx.lineTo(500,500);
+        ctx.lineTo(100,500);
+        ctx.closePath();
+        
+         //绘制内部框
+        ctx.moveTo(200,200);
+        ctx.lineTo(200,400);
+        ctx.lineTo(400,400);
+        ctx.lineTo(400,200);
+        ctx.closePath();
+  
+
+       
+        ctx.stroke();
+        ctx.fill();
+
+    </script>
+</body>
+</html>
