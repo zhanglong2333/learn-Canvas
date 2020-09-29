@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="800" height="600"></canvas>
+    <script>
+        let myCanvas = document.querySelector('canvas')
+        let ctx = myCanvas.getContext('2d');
+
+        //创建线性渐变  指定方向
+        let linear = ctx.createLinearGradient(100,100,400,100);
+        // 增加颜色
+        linear.addColorStop(0,'red');
+        linear.addColorStop(0.5,'yellow');
+        linear.addColorStop(1,'green');
+        
+        ctx.moveTo(100,100);
+        ctx.lineTo(400,100);
+        ctx.lineWidth = 50;
+        ctx.strokeStyle = linear;
+        ctx.stroke();
+
+    </script>
+</body>
+
+</html>

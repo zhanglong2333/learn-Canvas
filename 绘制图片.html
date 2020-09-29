@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="800" height="600"></canvas>
+    <script>
+        let myCanvas = document.querySelector('canvas')
+        let ctx = myCanvas.getContext('2d');
+
+        let img = document.createElement('img');
+        img.src = './demo3.jpg';
+
+        //等待图片加载完成之后再用画布画出来
+
+        img.onload = function () {
+            ctx.drawImage(img, -500, 0, img.width, img.height);
+        };
+    </script>
+</body>
+
+</html>
