@@ -10,6 +10,7 @@
             border: 1px solid #000;
             background-image: url('./demo3.jpg');
             background-size: cover;
+            margin-left: 100px;
         }
     </style>
 </head>
@@ -30,21 +31,25 @@
         let crearCircle = function (e) {
             // 设置图像合成规则
             ctx.globalCompositeOperation = 'destination-out';
-            //绘制圆形
-            ctx.beginPath();
-            ctx.arc(e.clientX, e.clientY, 50, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-            // 鼠标移动的时候生成圆型
-            document.addEventListener('mousemove', crearCircle)
+
+            // ctx.beginPath();
+            ctx.lineTo(e.clientX - myCanvas.offsetLeft, e.clientY - myCanvas.offsetTop);
+            ctx.stroke();
+
         }
         // 鼠标按下开始生成圆型
-        document.addEventListener('mousedown', crearCircle);
+        document.addEventListener('mousedown', function (e) {
+            console.log(e);
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+            ctx.lineWidth = 40;
+            ctx.lineCap = 'round';
+            document.addEventListener('mousemove', crearCircle);
+        });
 
         // 鼠标抬起的时候清除绘制事件
         document.addEventListener('mouseup', function () {
-            console.log('弹起了');
-            document.removeEventListener('mouseup', crearCircle);
+            // document.removeEventListener('mousedown', crearCircle);
             document.removeEventListener('mousemove', crearCircle);
         })
     </script>
