@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="800" height="600"></canvas>
+    <script>
+        let myCanvas = document.querySelector('canvas')
+        let ctx = myCanvas.getContext('2d');
+
+        //目标图像
+        ctx.fillStyle = 'orange';
+        ctx.fillRect(100, 100, 200, 100);
+
+        // 目标图像和源图像都显示，源图像显示在目标图像之上
+         ctx.globalCompositeOperation = 'source-over';
+
+        // 在目标图像上面显示源图像，源图像超出目标图像的部分不显示
+        ctx.globalCompositeOperation = 'source-atop';
+
+        // 在目标图像里面显示源图像，超出的部分不显示，并且目标图像是透明的
+        ctx.globalCompositeOperation = 'source-in';
+
+        // 显示目标图像外的源图像（只显示超出部分的），并且目标图像是透明的
+        ctx.globalCompositeOperation = 'source-out';
+
+        // 目标图像显示在源图像之上
+        ctx.globalCompositeOperation = 'destination-over';
+
+        // 在源图像区域显示目标图像，超出部分不显示
+        ctx.globalCompositeOperation = 'destination-atop';
+
+        // 只在源图像区域显示目标图像，超出部分不显示，并且源图像是透明的
+        ctx.globalCompositeOperation = 'destination-in';
+
+        // 只在源图像区域之外显示目标图像，并且源图像是透明的
+        ctx.globalCompositeOperation = 'destination-out';
+
+        // 目标图像和源图像都显示，目标图像显示在源图像之上
+        ctx.globalCompositeOperation = 'lighter';
+
+        // 只显示源图像
+        ctx.globalCompositeOperation = 'copy';
+
+        // 目标图像和源图像共有地方不显示
+        ctx.globalCompositeOperation = 'xor';
+       
+       
+        // 源图像
+        ctx.fillStyle = 'red';
+        ctx.fillRect(100, 100, 100, 200);
+    </script>
+</body>
+
+</html>

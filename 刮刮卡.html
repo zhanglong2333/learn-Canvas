@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+            background-image: url('./demo3.jpg');
+            background-size: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="800" height="600"></canvas>
+    <script>
+        let myCanvas = document.querySelector('canvas')
+        let ctx = myCanvas.getContext('2d');
+
+        ctx.save()
+        // 绘制一个矩形
+        ctx.beginPath();
+        ctx.fillStyle = '#f1f1f1';
+        ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+
+
+        let crearCircle = function (e) {
+            // 设置图像合成规则
+            ctx.globalCompositeOperation = 'destination-out';
+            //绘制圆形
+            ctx.beginPath();
+            ctx.arc(e.clientX, e.clientY, 50, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            // 鼠标移动的时候生成圆型
+            document.addEventListener('mousemove', crearCircle)
+        }
+        // 鼠标按下开始生成圆型
+        document.addEventListener('mousedown', crearCircle);
+
+        // 鼠标抬起的时候清除绘制事件
+        document.addEventListener('mouseup', function () {
+            console.log('弹起了');
+            document.removeEventListener('mouseup', crearCircle);
+            document.removeEventListener('mousemove', crearCircle);
+        })
+    </script>
+</body>
+
+</html>

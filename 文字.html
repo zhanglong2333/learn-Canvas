@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="800" height="600"></canvas>
+    <script>
+        let myCanvas = document.querySelector('canvas')
+        let ctx = myCanvas.getContext('2d');
+
+        ctx.font = 'bold italic 30px 微软雅黑';
+        ctx.fillStyle = 'orange';
+        // 文字水平居中
+        // 文字水平居中是以文字起始位置为坐标中心，居中的时候文字是以此坐标中心居中；
+        // 属性值：start,end,center,left,right
+        ctx.textAlign = 'center';
+        //文字垂直居中
+
+        ctx.textBaseline = "middle";
+        // 填充文字
+        ctx.fillText('canvas 学习教程', 300, 300);
+
+        // 描边文字
+        ctx.strokeStyle = 'skyblue';
+        ctx.strokeText('镂空文字', 100, 100);
+    </script>
+</body>
+
+</html>
