@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="800" height="800"></canvas>
+    <script>
+        let myCanvas = document.querySelector('canvas')
+        let ctx = myCanvas.getContext('2d');
+
+        // 创建一个imageData
+        let imageData = ctx.createImageData(myCanvas.width, myCanvas.height);
+        // 绘制横线
+        for (let i = 0; i <= imageData.width; i++) {
+            setPixel(imageData, i, 20, [255, 0, 100, 255])
+        }
+
+
+        // 绘制纵线
+        for (let i = 0; i <= imageData.height; i++) {
+            setPixel(imageData, 20, i, [255, 150, 350, 255])
+        }
+        ctx.putImageData(imageData, 0, 0);
+
+
+
+        function setPixel(imageData, x, y, color = [0, 0, 0, 0]) {
+
+                imageData.data[y * imageData.width * 4 + x * 4 + 0] = color[0];
+                imageData.data[y * imageData.width * 4 + x * 4 + 1] = color[1];
+                imageData.data[y * imageData.width * 4 + x * 4 + 2] = color[2];
+                imageData.data[y * imageData.width * 4 + x * 4 + 3] = color[3];
+        }
+    </script>
+</body>
+
+</html>

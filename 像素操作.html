@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas width="800" height="600"></canvas>
+    <script>
+        let myCanvas = document.querySelector('canvas')
+        let ctx = myCanvas.getContext('2d');
+        ctx.fillStyle = 'orange';
+        ctx.fillRect(0, 0, 200, 200);
+        // 读取像素
+        let imgData = ctx.getImageData(0, 0, 200, 200);
+        // 写入像素
+        /*
+         * 第一个参数传入读取的像素，第二三个传入位置
+         */
+        ctx.putImageData(imgData, 600, 300);
+
+
+
+        // 创建一个imagedata对象
+        let imageData = ctx.createImageData(200, 200);
+        // 修改imageData对象里面的颜色
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            imageData.data[i] = 255;
+            imageData.data[i + 1] = 255;
+            imageData.data[i + 2] = 35;
+            imageData.data[i + 3] = 150;
+        }
+        // 写入画布
+        ctx.putImageData(imageData,300,400);
+    </script>
+</body>
+
+</html>

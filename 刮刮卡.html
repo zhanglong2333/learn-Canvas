@@ -37,9 +37,8 @@
             ctx.stroke();
 
         }
-        // 鼠标按下开始生成圆型
+        // 鼠标按下开始生成线
         document.addEventListener('mousedown', function (e) {
-            console.log(e);
             ctx.beginPath();
             ctx.moveTo(e.offsetX, e.offsetY);
             ctx.lineWidth = 40;
