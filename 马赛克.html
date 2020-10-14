@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    canvas {
+        border: 1px solid;
+    }
+</style>
+
+<body>
+    <canvas width="1800" height="600"></canvas>
+    <script>
+        // 创建画布
+        let myCanvas = document.querySelector('canvas');
+        let ctx = myCanvas.getContext('2d');
+        // 创建图像
+        let img = document.createElement('img');
+        img.src = './demo3.jpg';
+        // 把图像显示在画布上
+        img.onload = function () {
+            ctx.drawImage(img, 0, 0, myCanvas.width / 2, myCanvas.height);
+            //获取像素
+            let imgData = ctx.getImageData(0, 0, myCanvas.width / 2, myCanvas.height);
+
+            // 模糊度  数值越大越模糊
+            let num = 5;
+
+            let newImg = ctx.createImageData(myCanvas.width / 2, myCanvas.height)
+
+            // 等分画布
+            let stepW = imgData.width / num;
+            let stepH = imgData.height / num;
+
+            for (let i = 0; i < stepH; i++) {
+                for (let j = 0; j < stepW; j++) {
+                    // 随机一个位置
+                    let color = getColor(imgData, j * num+ Math.floor(Math.random() * num), i * num+ Math.floor(Math.random() * num));
+                    for (let l = 0; l < num; l++) {
+                        for (let k = 0; k < num; k++) {
+                            setColor(newImg, j * num + l, i * num + k, color);
+                        }
+
+                    }
+                }
+            }
+
+            ctx.putImageData(newImg, myCanvas.width / 2, 0)
+        }
+
+
+
+
+
+
+        // 获取颜色
+        function getColor(obj, x, y) {
+            let {
+                width,
+                data
+            } = obj;
+            let color = [];
+            color[0] = data[(y * width + x) * 4 + 0];
+            color[1] = data[(y * width + x) * 4 + 1];
+            color[2] = data[(y * width + x) * 4 + 2];
+            color[3] = data[(y * width + x) * 4 + 3];
+            return color;
+        }
+
+        // 设置颜色
+        function setColor(obj, x, y, color) {
+            let {
+                width,
+                data
+            } = obj;
+            data[4 * (y * width + x) + 0] = color[0];
+            data[4 * (y * width + x) + 1] = color[1];
+            data[4 * (y * width + x) + 2] = color[2];
+            data[4 * (y * width + x) + 3] = color[3];
+        }
+    </script>
+</body>
+
+</html>
