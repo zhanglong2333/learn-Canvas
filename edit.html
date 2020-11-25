@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>发布1</title>
+  <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/common.css">
+  <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/vant.css">
+  <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/release.css">
+  <style>
+    #editor {
+      padding: .4rem
+        /* 30/75 */
+        .4rem
+        /* 30/75 */
+        .933333rem
+        /* 70/75 */
+      ;
+      margin-bottom: .933333rem
+        /* 70/75 */;
+    }
+    ol,ul{
+      /* list-style-position:inside !important; */
+    }
+    
+    ul{
+      list-style-type: disc;
+    }
+    ol{
+     list-style-type:decimal ;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" v-cloak>
+    <div class="top-container">
+      <div id="title" placeholder="请输入标题(40个以内字符)" ref="titleMsg" @focus="showTab = false" @blur="showTab = true"
+        @keyup="titleNum">
+      </div>
+      <span class="warn" v-if="show">{{info}}</span>
+    </div>
+
+    <div id="editor" placeholder="请开始你的创作！" ref="contentMsg" @focus="topTab" @blur="bottomTab" @keyup="getNewTop"></div>
+    <div class="send" @click="send">发布</div>
+    <!-- 状态栏 -->
+    <ul class="flex-left tabList" v-if="showTab" id="tab">
+      <li class="flex-center">
+        <img src="http://tk.taihaomai.vip/assets/images/img/charutupian.png" alt="" @click="addImg">
+      </li>
+      <li class="flex-center">
+        <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian.png" alt="" @click="addUnderLine"
+          v-if="!isUnder">
+        <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian1.png" alt="" @click="addUnderLine" v-else>
+      </li>
+      <li class="flex-center">
+        <img src="http://tk.taihaomai.vip/assets/images/img/jiacu.png" alt="" @click="addBold" v-if="!isBold">
+        <img src="http://tk.taihaomai.vip/assets/images/img/jiacu1.png" alt="" @click="addBold" v-else>
+      </li>
+      <li class="flex-center">
+        <img src="http://tk.taihaomai.vip/assets/images/img/wuxu.png" alt="" @click="noArray" v-if="!isNoArray">
+        <img src="http://tk.taihaomai.vip/assets/images/img/wuxu1.png" alt="" @click="noArray" v-else>
+      </li>
+      <li class="flex-center">
+        <img src="http://tk.taihaomai.vip/assets/images/img/youxu.png" alt="" v-on:click="array" v-if="!isArray">
+        <img src="http://tk.taihaomai.vip/assets/images/img/youxu1.png" alt="" v-on:click="array" v-else>
+      </li>
+      <li class="flex-center">
+        <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="undo">
+      </li>
+      <li class="flex-center">
+        <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="redo">
+      </li>
+    </ul>
+    <!-- 添加 -->
+    <van-overlay :show="showMark">
+      <div class="addInfo">
+        <p>选择发布领域</p>
+        <div class="flex-center label">
+          <van-radio-group v-model="result" direction="horizontal" checked-color=" #E99100">
+            <van-radio :name="item.id" v-for="item in list">{{item.name}}</van-radio>
+          </van-radio-group>
+        </div>
+        <div class="btn-container flex-left">
+          <div class="flex-center" @click.stop="clean">取消</div>
+          <div class="flex-center" @click.stop="sure">确定</div>
+        </div>
+      </div>
+    </van-overlay>
+  </div>
+  <script src="http://tk.taihaomai.vip/assets/js/hg/flexible.js"></script>
+  <script src="http://tk.taihaomai.vip/assets/js/hg/vue.min.js"></script>
+  <script src="http://tk.taihaomai.vip/assets/js/hg/axios.min.js"></script>
+  <script src="http://tk.taihaomai.vip/assets/js/hg/vant.min.js"></script>
+  <script>
+    var vue = new Vue({
+      el: "#app",
+      data: {
+        show: false,
+        titleMsg: '',
+        info: '',
+        showTab: true,
+        isUnder: false, //开启下划线
+        isBold: false, //加粗
+        isNoArray: false, //无序
+        isArray: false, //有序
+        showMark: false,
+        result: [],
+        list: [],
+        // content:""
+      },
+      created() {
+        this.getType();
+        window.addEventListener("popstate", function (e) { // 回调函数中实现需要的功能
+          e.stopPropagation; //阻止事件传播
+          alert('监听到了返回动作');
+        }, false);
+
+      },
+      mounted() {
+        this.initEditor();
+        let id = window.location.search.substring(1).split('=')[1];
+        if (id) {
+          this.$refs.titleMsg.innerText = ""
+          this.$refs.contentMsg.innerHTML = ""
+        }
+      },
+      methods: {
+        initEditor() {
+
+          this.openOrCloseEditor('title', true);
+          this.openOrCloseEditor('editor', true);
+        },
+        /**
+         * 功能： 开启元素编辑功能
+         * 输入： el：编辑器ID; operate：Boolean值，表示启动还是关闭
+         */
+        openOrCloseEditor(el, operate) {
+          var editor = document.getElementById(el);
+          editor.contentEditable = operate;
+        },
+        titleNum() {
+          let text = this.$refs.titleMsg.innerText;
+          if (text.length && text.length > 40) {
+            this.info = '标题字数不超过40个字';
+            this.show = true;
+          } else {
+            this.show = false;
+          }
+        },
+        // 传入图片
+        addImg() {
+          console.log('插入图片');
+        },
+        // 添加下划线
+        addUnderLine() {
+          this.isUnder = !this.isUnder;
+          document.execCommand('underline');
+          this.getFocus();
+        },
+        // 加粗
+        addBold() {
+          this.isBold = !this.isBold;
+          document.execCommand('bold');
+          this.getFocus();
+        },
+        // 无序
+        noArray() {
+          this.getFocus();
+
+          this.isNoArray = !this.isNoArray;
+          this.isArray = false;
+          document.execCommand('insertUnorderedList');
+        },
+        // 有序
+        array() {
+          this.getFocus();
+          this.isArray = !this.isArray;
+          this.isNoArray = false;
+          document.execCommand('insertOrderedList');
+
+        },
+        // 重做
+        redo() {
+          document.execCommand('redo');
+          this.getFocus();
+        },
+        // 撤销
+        undo() {
+          document.execCommand('undo');
+          this.getFocus();
+        },
+        // 获取焦点
+        getFocus() {
+            document.querySelector('#editor').focus();
+
+        },
+        //封装函数
+        getContent(el) {
+          let editor = document.getElementById(el);
+          return editor.innerHTML;
+        },
+
+        // 发送
+        send() {
+          let text = this.$refs.titleMsg.innerText;
+          let title = this.getContent('title');
+          let editor = this.getContent('editor');
+          if (text.length && text.length > 40) {
+            this.info = '标题字数不超过40个字';
+            this.show = true;
+            vant.Toast('标题字数不超过40个字');
+            return;
+          } else if (text.length > 30) {
+            this.info = '标题字数不可大于30个字';
+            vant.Toast('标题字数不可大于30个字')
+            this.show = true;
+            return;
+          } else {
+            this.showMark = true;
+
+          }
+
+        },
+        // 获取文章类别
+        getType() {
+          let url = "http://tk.taihaomai.vip/hg_release_type";
+          axios.post(url).then(res => {
+            console.log(res);
+            if (res.data.status == "ok") {
+              this.list = res.data.type;
+            }
+          }).catch(err => {
+            console.log(err)
+          });
+        },
+        clean() {
+          this.showMark = false;
+          this.result = [];
+        },
+        sure() {
+          this.showMark = false;
+          let url = "http://tk.taihaomai.vip/info_create";
+          let text = this.$refs.contentMsg.innerHTML.replace(/&nbsp;/g, '');
+          text = text.replace(/style/g, 'not')
+          let data = {
+            title: this.$refs.titleMsg.innerHTML.replace(/&nbsp;/g, ''),
+            type_id: this.result,
+            content: text,
+            status: 1
+          }
+          axios.post(url, data).then(res => {
+            console.log(res)
+            if (res.data.status = "ok") {
+              vant.Toast('已提交审核，审核通过后发布');
+              window.location.href = "http://tk.taihaomai.vip";
+            } else {
+              vant.Toast(res.data.info);
+            }
+          }).catch(err => {
+            console.log(err)
+          });
+        },
+        // 键盘弹起，功能栏顶起
+        topTab() {
+          let u = navigator.userAgent;
+          let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+          if (isIOS) {
+            // let height = document.documentElement.clientHeight || document.body.clientHeight;
+            // let height = document.documentElement.innerHeight || document.body.innerHeight;
+            let height = document.documentElement.scrollTop || document.body.scrollTop;
+            document.querySelector('#tab').style.bottom = (height + 630) / 75 + 'rem'
+          // document.querySelector("#tab").scrollIntoView(false);
+
+          }
+
+        },
+        // 恢复默认高度
+        bottomTab() {
+          let u = navigator.userAgent;
+          let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+          if (isIOS) {
+            document.querySelector('#tab').style.bottom = 0;
+          }
+        },
+        getNewTop(e) {
+
+            // 尝试获取输入是的高度
+
+
+
+          // document.querySelector("#editor").scrollIntoView(false);
+          // 重新调取一下高度，使其高度在最底部！
+          // 未测试步骤，应该会有bug
+          // let u = navigator.userAgent;
+          // let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+          // if (isIOS) {
+            this.topTab()
+
+          // }
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

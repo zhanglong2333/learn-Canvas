@@ -13,7 +13,7 @@
 </style>
 
 <body>
-    <canvas width="1800" height="600"></canvas>
+    <canvas width="1800" height="800"></canvas>
     <script>
         // 创建画布
         let myCanvas = document.querySelector('canvas');
@@ -40,6 +40,8 @@
                 for (let j = 0; j < stepW; j++) {
                     // 随机一个位置
                     let color = getColor(imgData, j * num+ Math.floor(Math.random() * num), i * num+ Math.floor(Math.random() * num));
+
+                    // 给每个小分格设置颜色
                     for (let l = 0; l < num; l++) {
                         for (let k = 0; k < num; k++) {
                             setColor(newImg, j * num + l, i * num + k, color);

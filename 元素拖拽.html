@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        canvas {
+            /* border: 1px solid; */
+            margin: 10px;
+        }
+
+        .container {
+            margin-top: 1000px;
+            border: 1px solid #cc4422;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="container">
+        <canvas width="200" height="200"></canvas>
+    </div>
+
+    <script>
+        // 创建画布
+        let myCanvas = document.querySelector('canvas');
+        let ctx = myCanvas.getContext('2d');
+        ctx.fillStyle = '#cc4422';
+        ctx.fillRect(0, 0, 200, 200);
+        // ctx.stroke();
+
+        myCanvas.addEventListener('click', function (e) {
+            console.log(e);
+
+            // screenY  距离窗口顶部的距离
+            // clientY  距离浏览器窗口的距离
+            // offsetY  距离当前元素顶部的距离
+            // pageX    获取页面中的高度
+
+
+
+        })
+    </script>
+</body>
+
+</html>
