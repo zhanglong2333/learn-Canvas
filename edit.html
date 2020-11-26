@@ -17,7 +17,7 @@
         /* 30/75 */
         0;
 
-      height: 60vh;
+      height: 29vh;
       overflow: scroll;
     }
 
@@ -56,30 +56,30 @@
       <!-- 状态栏 -->
       <ul class="flex-left tabList" v-if="showTab" id="tab">
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/charutupian.png" alt="" @click="addImg">
+          <img src="http://tk.taihaomai.vip/assets/images/img/charutupian.png" alt="" @click.stop="addImg">
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian.png" alt="" @click="addUnderLine"
+          <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian.png" alt="" @click.stop="addUnderLine"
             v-if="!isUnder">
-          <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian1.png" alt="" @click="addUnderLine" v-else>
+          <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian1.png" alt="" @click.stop="addUnderLine" v-else>
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/jiacu.png" alt="" @click="addBold" v-if="!isBold">
-          <img src="http://tk.taihaomai.vip/assets/images/img/jiacu1.png" alt="" @click="addBold" v-else>
+          <img src="http://tk.taihaomai.vip/assets/images/img/jiacu.png" alt="" @click.stop="addBold" v-if="!isBold">
+          <img src="http://tk.taihaomai.vip/assets/images/img/jiacu1.png" alt="" @click.stop="addBold" v-else>
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/wuxu.png" alt="" @click="noArray" v-if="!isNoArray">
-          <img src="http://tk.taihaomai.vip/assets/images/img/wuxu1.png" alt="" @click="noArray" v-else>
+          <img src="http://tk.taihaomai.vip/assets/images/img/wuxu.png" alt="" @click.stop="noArray" v-if="!isNoArray">
+          <img src="http://tk.taihaomai.vip/assets/images/img/wuxu1.png" alt="" @click.stop="noArray" v-else>
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/youxu.png" alt="" v-on:click="array" v-if="!isArray">
-          <img src="http://tk.taihaomai.vip/assets/images/img/youxu1.png" alt="" v-on:click="array" v-else>
+          <img src="http://tk.taihaomai.vip/assets/images/img/youxu.png" alt="" v-on:click.stop="array" v-if="!isArray">
+          <img src="http://tk.taihaomai.vip/assets/images/img/youxu1.png" alt="" v-on:click.stop="array" v-else>
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="undo">
+          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click.stop="undo">
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="redo">
+          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click.stop="redo">
         </li>
       </ul>
       <div class="send" @click="send">发布</div>
@@ -112,7 +112,7 @@
         show: false,
         titleMsg: '',
         info: '',
-        showTab: false,
+        showTab: true,
         isUnder: false, //开启下划线
         isBold: false, //加粗
         isNoArray: false, //无序
@@ -120,7 +120,7 @@
         showMark: false,
         result: [],
         list: [],
-        // content:""
+        // content:"",
       },
 
       created() {
@@ -187,7 +187,9 @@
           this.getFocus();
         },
         // 无序
-        noArray() {
+        noArray(e) {
+          e.stopPropagation()
+          this.tr = true;
           this.getFocus();
 
           this.isNoArray = !this.isNoArray;
@@ -195,7 +197,9 @@
           document.execCommand('insertUnorderedList');
         },
         // 有序
-        array() {
+        array(e) {
+          // alert(111)
+          e.stopPropagation()
           this.getFocus();
           this.isArray = !this.isArray;
           this.isNoArray = false;
@@ -223,16 +227,7 @@
 
         // 发送
         send() {
-          vant.Dialog.confirm({
-              title: '提示',
-              message: '您还没有保存哦，是否保存为草稿？',
-            })
-            .then(() => {
-              // on confirm
-            })
-            .catch(() => {
-              // on cancel
-            });
+       
           let text = this.$refs.titleMsg.innerText;
           let title = this.getContent('title');
           let editor = this.getContent('editor');
@@ -318,22 +313,9 @@
           }
 
         },
-        getNewTop(e) {
-          console.log(e.target.scrollHeight)
-          console.log(e)
-          // 尝试获取输入是的高度
-
-
-
-          // document.querySelector("#editor").scrollIntoView(false);
-          // 重新调取一下高度，使其高度在最底部！
-          // 未测试步骤，应该会有bug
-          // let u = navigator.userAgent;
-          // let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-          // if (isIOS) {
-          this.topTab()
-
-          // }
+        getNewTop() {
+          
+          // document.querySelector('#editor').scrollIntoView()
         },
         focusin() {
           document.body.addEventListener('focusin', () => {
@@ -346,27 +328,25 @@
             let u = navigator.userAgent;
             let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
             if (isIOS) {
-              // document.querySelector('#app').style.height = 100 + 'vh'
-              // document.querySelector('#tab').style.bottom = 0;
               // document.querySelector('html').style.height = (375 / 2) / 75 + 'rem ';
               // document.querySelector('body').style.height = (375 / 2) / 75 + 'rem ';
               // document.querySelector('#app').style.height = (375 / 2) / 75 + 'rem ';
               // document.querySelector('#tab').style.bottom = (Number(height) - 230) / 75 + 'rem';
-              // document.querySelector('#editor').style.height = 60 + '%'
+              // document.querySelector('#editor').style.height = 26 + 'vh'
             }
 
           })
         },
         focusout() {
-          document.body.addEventListener('focusout', () => {
+          document.body.addEventListener('focusout', (e) => {
+              // e.stopPropagation()
             //软键盘收起的事件处理
-            this.showTab = false;
-            document.querySelector('#app').style.height = 100 + 'vh'
-            document.querySelector('#tab').style.bottom = 0;
+            // this.showTab = false;
+            setTimeout(()=>{
+              document.querySelector('#editor').style.height = 29 + 'vh';
+
+            },10)
           })
-        },
-        beforeDestroy() {
-          alert('卢本伟牛逼')
         }
       }
     });
