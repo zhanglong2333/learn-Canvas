@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>编辑资料</title>
+    <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/common.css">
+    <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/vant.css">
+    <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/editInfo.css">
+</head>
+ <style>
+     textarea{
+         -webkit-appearance: none;
+         appearance: none;
+     }
+ </style>
+<body>
+    <div id="app" v-cloak>
+        <ul class="top">
+
+            <li class="flex-between" @click="changeHead">
+                <div>更换头像</div>
+                <img :src="headPhoto" alt="" class="authorImg">
+            </li>
+                        <li class="flex-between">
+                <div>用户名</div>
+                <div>
+                    <input type="text" v-model="name" placeholder="请输入用户名">
+                </div>
+            </li>
+                        <li class="flex-between">
+                <div>所属地区</div>
+                <div class="flex-end" @click="checkCity">
+                    <span>{{area?area:'未填写'}}</span>
+                    <img src="http://tk.taihaomai.vip/assets/images/img/youjiantou.png" alt="" class="direction">
+                </div>
+            </li>
+                        <li class="flex-between">
+                <div>性别</div>
+                <div class="flex-end" @click="checkSex">
+                    <span>{{sex?(sex=='0'?'男':'女'):'未填写'}}</span>
+                    <img src="http://tk.taihaomai.vip/assets/images/img/youjiantou.png" alt="" class="direction">
+                </div>
+            </li>
+            <li class="flex-between">
+                <div>手机号</div>
+                <div class="flex-end">
+                    <input type="number" v-model="phone" placeholder="请输入手机号">
+                </div>
+            </li>
+            <li class="flex-between">
+                <div>生日</div>
+                <div class="flex-end" @click="cheackDate">
+                    <span>{{birthday?birthday:'未填写'}}</span>
+                    <img src="http://tk.taihaomai.vip/assets/images/img/youjiantou.png" alt="" class="direction">
+                </div>
+            </li>
+        </ul>
+                <p>个人简介</p>
+                <div class="container">
+                        <textarea name="" id="" cols="30" rows="3" v-model="remarks"></textarea>
+                        <div class="btn" @click="save">保存</div>
+        </div>
+        <!-- 地区选择器 -->
+        <van-popup v-model="isShowArea" round position="bottom">
+            <van-area title="请选择地区" :area-list="areaList" @cancel="isShowArea = false" :columns-num="2" @confirm="chooseArea" />
+        </van-popup>
+        <!-- 选择器 -->
+        <van-popup v-model="isShowCityCheck" round position="bottom">
+            <van-picker show-toolbar :title="title" @confirm="checkDone" @cancel="isShowCityCheck=false" :columns="columns"></van-picker>
+        </van-popup>
+        <!-- 日期选择器 -->
+        <van-popup v-model="isShowDateCheck" round position="bottom">
+            <van-datetime-picker v-model="currentDate" type="date" @confirm="checkDateDone" @cancel="isShowDateCheck=false" title="选择年月日" :min-date="minDate" :max-date="maxDate" />
+        </van-popup>
+        <!-- 添加 -->
+        <van-overlay :show="show">
+            <div class="addInfo">
+                <p>标签编辑</p>
+                <input type="text" placeholder="请输入标签内容" v-model="tabInfo" class="editContent" @click.stop="stopstop">
+                <div class="btn-container flex-left">
+                    <div class="flex-center" @click.stop="clean">取消</div>
+                    <div class="flex-center" @click.stop="sure">确定</div>
+                </div>
+            </div>
+        </van-overlay>
+    </div>
+    <script src="http://tk.taihaomai.vip/assets/js/hg/area.js"></script>
+    <script src="http://tk.taihaomai.vip/assets/js/hg/flexible.js"></script>
+    <script src="http://tk.taihaomai.vip/assets/js/hg/vue.min.js"></script>
+    <script src="http://tk.taihaomai.vip/assets/js/hg/axios.min.js"></script>
+    <script src="http://tk.taihaomai.vip/assets/js/hg/vant.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script>
+      wx.config({"debug":false,"beta":false,"jsApiList":["onMenuShareTimeline","onMenuShareAppMessage","previewImage","chooseImage","uploadImage"],"appId":"wxacdb885db7bdd665","nonceStr":"GeBqs2T6q3","timestamp":1606356420,"url":"http:\/\/tk.taihaomai.vip\/hg_editInfo","signature":"e56e622da4bb330da9923438ea69f301b53d9938"});
+
+        var vue = new Vue({
+            el: "#app",
+            data: {
+                title: '请选择性别',
+                isShowCityCheck: false, //选择城市
+                isShowDateCheck: false, //选择日期
+                columns: '',
+                areaList: window.city,
+                sexList: ['男', '女'],
+                // columns: ['保密', '男', '女'],
+                minDate: new Date(1940, 0, 1),
+                maxDate: new Date(),
+                currentDate: new Date(),
+                birthday: "", //生日
+                username: '', //用户名
+                province: "", //省份
+                city: "",
+                area: `-`, //地区
+                sex: "0", //性别
+                isCheck: '', //
+                tabList: '',
+                show: false,
+                tabInfo: '', //添加标签内容
+                phone: "", //电话
+                isShowArea: false,
+                headPhoto: "https://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqVbs3DP37N6QsvoicYfnibTOYAqp6CK7aPGZlGeibicsZTMqlTKpd5bm2XFZyuMJMl1p4VSGDWvTrKOA/132", //头像
+                qrcode: "",
+                name: "稻香",
+                remarks: "",
+                qrcodeServerId: '', //二维码服务器id
+                headPhotoServerId: '' //头像服务器Id
+
+            },
+            created() {},
+            mounted() {
+                this.hide();
+                let a = "[]";
+                if (a) {
+                    a = a.replace(/&quot;/g, '');
+                    let b = a.slice(1, a.length - 1);
+                    if (b) {
+                        this.tabList = [];
+                    } else {
+                        this.tabList = b.split(',');
+
+                    }
+                }
+            },
+            methods: {
+
+                // 选择城市
+                checkCity() {
+                    this.isShowArea = true;
+                    this.isShowDateCheck = false;
+                },
+                // 选择性别
+                checkSex() {
+                    this.title = '请选择性别';
+                    this.isShowCityCheck = true;
+                    this.isShowDateCheck = false;
+                    this.columns = this.sexList;
+                },
+                // 选择结果
+                checkDone(val) {
+                    if (val instanceof Array) {
+                        this.area = val[0] + '—' + val[1];
+                    } else {
+                        this.sex = val == '男' ? 0 : 1;
+                    }
+                    this.isShowCityCheck = false;
+                },
+                // 选择日期
+                cheackDate() {
+                    this.title = '请选择日期';
+                    this.isShowCityCheck = false;
+                    this.isShowDateCheck = true;
+                },
+                // 选择日期结果
+                checkDateDone(val) {
+                    this.isShowDateCheck = false;
+                    let month = this.dateFormate(Number(val.getMonth()) + 1)
+                    let day = this.dateFormate(Number(val.getDate()))
+                    let bir = val.getFullYear() + '-' + month + '-' + day;
+                    this.birthday = bir;
+                },
+                dateFormate(val) {
+                    if (val < 10) {
+                        return val = '0' + val;
+                    } else {
+                        return val;
+                    }
+                },
+                // 标签选择
+                checkList(val) {
+                    if (this.isCheck == val) {
+                        this.isCheck = '';
+                        return;
+                    }
+                    this.isCheck = val;
+                },
+                // 隐藏
+                hide() {
+                    let that = this;
+                    document.onclick = function() {
+                        that.isCheck = '';
+                        that.show = false;
+                    };
+                },
+                // 添加标签
+                addList() {
+                    if (this.tabList.length >= 3) {
+                        vant.Toast('最多3个标签哦~');
+                        return;
+                    }
+                    this.isCheck = '';
+                    this.show = true;
+                },
+                stopstop() {},
+                // 清楚标签
+                clean() {
+                    this.tabInfo = '';
+                    this.show = false;
+                },
+                sure() {
+                    if (!this.tabInfo) {
+                        vant.Toast('您还没有输入内容哦~');
+                        return;
+                    }
+                    if (this.tabList.length >= 3) {
+                        vant.Toast('最多3个标签哦~');
+                        return;
+                    }
+                    this.tabList.push(this.tabInfo);
+                    this.tabInfo = '';
+                    this.show = false;
+                },
+                // 上传二维码
+                chooseQrcode() {
+                    let that = this;
+                    wx.chooseImage({
+                        count: 1, // 默认9
+                        sizeType: ['original'],
+                        sourceType: ['album', 'camera'],
+                        success: function(res) {
+                            that.qrcode = res.localIds[0]; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                            //上传图片
+                            wx.uploadImage({
+                                localId: that.qrcode, // 需要上传的图片的本地ID，由chooseImage接口获得
+                                isShowProgressTips: 1, // 默认为1，显示进度提示
+                                success: function(res) {
+                                    that.qrcodeServerId = res.serverId; // 返回图片的服务器端ID
+                                }
+                            });
+                        }
+                    });
+                },
+                // 上传头像
+                changeHead() {
+                    let that = this;
+                    wx.chooseImage({
+                        count: 1, // 默认9
+                        sizeType: ['original'],
+                        sourceType: ['album', 'camera'],
+                        success: function(res) {
+                            that.headPhoto = res.localIds[0]; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+                            //上传图片
+                            wx.uploadImage({
+                                localId: that.headPhoto, // 需要上传的图片的本地ID，由chooseImage接口获得
+                                isShowProgressTips: 1, // 默认为1，显示进度提示
+                                success: function(res) {
+                                    that.headPhotoServerId = res.serverId; // 返回图片的服务器端ID
+                                }
+                            });
+                        }
+                    });
+                },
+                //保存
+                save() {
+                    let url = "http://tk.taihaomai.vip/hg_editInfo";
+                    let data = {
+                        name: this.name,
+                        phone: this.phone,
+                        sex: this.sex ,
+                        // province:this.area,
+                        province: this.province,
+                        city: this.city,
+                        birthday: this.birthday,
+                        remarks: this.remarks,
+                        field: this.tabList,
+                        cover: this.headPhotoServerId, //头像ID
+                        code_cover: this.qrcodeServerId //二维码ID
+                    }
+                    axios.post(url, data).then(res => {
+                        if (res.data.status == "ok") {
+                            vant.Toast(res.data.info)
+                            window.location.reload();
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    });
+                    // console.log(data);
+
+                },
+                // 选择地区
+                chooseArea(val) {
+                    this.isShowArea = false;
+                    console.log(val);
+                    this.province = val[0].name;
+                    this.city = val[1].name;
+                    this.area = val[0].name + '-' + val[1].name;
+                },
+                //删除标签
+                delTab(val) {
+                    this.tabList = this.tabList.filter(item => {
+                        return item != val;
+                    })
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

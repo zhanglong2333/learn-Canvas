@@ -3,8 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <title>发布1</title>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,viewport-fit=cover">
+  <title>发布</title>
   <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/common.css">
   <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/vant.css">
   <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/release.css">
@@ -14,21 +15,29 @@
         /* 30/75 */
         .4rem
         /* 30/75 */
-        .933333rem
-        /* 70/75 */
-      ;
-      margin-bottom: .933333rem
-        /* 70/75 */;
+        0;
+
+      height: 60vh;
+      overflow: scroll;
     }
-    ol,ul{
-      /* list-style-position:inside !important; */
-    }
-    
-    ul{
+
+
+    ul {
       list-style-type: disc;
     }
-    ol{
-     list-style-type:decimal ;
+
+    ol {
+      list-style-type: decimal;
+    }
+
+    .send {
+      margin: 1.333333rem
+        /* 100/75 */
+        auto 0;
+    }
+
+    ul.tabList {
+      position: inherit;
     }
   </style>
 </head>
@@ -43,36 +52,39 @@
     </div>
 
     <div id="editor" placeholder="请开始你的创作！" ref="contentMsg" @focus="topTab" @blur="bottomTab" @keyup="getNewTop"></div>
-    <div class="send" @click="send">发布</div>
-    <!-- 状态栏 -->
-    <ul class="flex-left tabList" v-if="showTab" id="tab">
-      <li class="flex-center">
-        <img src="http://tk.taihaomai.vip/assets/images/img/charutupian.png" alt="" @click="addImg">
-      </li>
-      <li class="flex-center">
-        <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian.png" alt="" @click="addUnderLine"
-          v-if="!isUnder">
-        <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian1.png" alt="" @click="addUnderLine" v-else>
-      </li>
-      <li class="flex-center">
-        <img src="http://tk.taihaomai.vip/assets/images/img/jiacu.png" alt="" @click="addBold" v-if="!isBold">
-        <img src="http://tk.taihaomai.vip/assets/images/img/jiacu1.png" alt="" @click="addBold" v-else>
-      </li>
-      <li class="flex-center">
-        <img src="http://tk.taihaomai.vip/assets/images/img/wuxu.png" alt="" @click="noArray" v-if="!isNoArray">
-        <img src="http://tk.taihaomai.vip/assets/images/img/wuxu1.png" alt="" @click="noArray" v-else>
-      </li>
-      <li class="flex-center">
-        <img src="http://tk.taihaomai.vip/assets/images/img/youxu.png" alt="" v-on:click="array" v-if="!isArray">
-        <img src="http://tk.taihaomai.vip/assets/images/img/youxu1.png" alt="" v-on:click="array" v-else>
-      </li>
-      <li class="flex-center">
-        <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="undo">
-      </li>
-      <li class="flex-center">
-        <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="redo">
-      </li>
-    </ul>
+    <div>
+      <!-- 状态栏 -->
+      <ul class="flex-left tabList" v-if="showTab" id="tab">
+        <li class="flex-center">
+          <img src="http://tk.taihaomai.vip/assets/images/img/charutupian.png" alt="" @click="addImg">
+        </li>
+        <li class="flex-center">
+          <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian.png" alt="" @click="addUnderLine"
+            v-if="!isUnder">
+          <img src="http://tk.taihaomai.vip/assets/images/img/xiahuaxian1.png" alt="" @click="addUnderLine" v-else>
+        </li>
+        <li class="flex-center">
+          <img src="http://tk.taihaomai.vip/assets/images/img/jiacu.png" alt="" @click="addBold" v-if="!isBold">
+          <img src="http://tk.taihaomai.vip/assets/images/img/jiacu1.png" alt="" @click="addBold" v-else>
+        </li>
+        <li class="flex-center">
+          <img src="http://tk.taihaomai.vip/assets/images/img/wuxu.png" alt="" @click="noArray" v-if="!isNoArray">
+          <img src="http://tk.taihaomai.vip/assets/images/img/wuxu1.png" alt="" @click="noArray" v-else>
+        </li>
+        <li class="flex-center">
+          <img src="http://tk.taihaomai.vip/assets/images/img/youxu.png" alt="" v-on:click="array" v-if="!isArray">
+          <img src="http://tk.taihaomai.vip/assets/images/img/youxu1.png" alt="" v-on:click="array" v-else>
+        </li>
+        <li class="flex-center">
+          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="undo">
+        </li>
+        <li class="flex-center">
+          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click="redo">
+        </li>
+      </ul>
+      <div class="send" @click="send">发布</div>
+
+    </div>
     <!-- 添加 -->
     <van-overlay :show="showMark">
       <div class="addInfo">
@@ -100,7 +112,7 @@
         show: false,
         titleMsg: '',
         info: '',
-        showTab: true,
+        showTab: false,
         isUnder: false, //开启下划线
         isBold: false, //加粗
         isNoArray: false, //无序
@@ -110,16 +122,18 @@
         list: [],
         // content:""
       },
+
       created() {
         this.getType();
-        window.addEventListener("popstate", function (e) { // 回调函数中实现需要的功能
-          e.stopPropagation; //阻止事件传播
-          alert('监听到了返回动作');
-        }, false);
+
+        // this.$refs.titleMsg.focus();
+        this.focusin()
+        this.focusout()
 
       },
       mounted() {
         this.initEditor();
+
         let id = window.location.search.substring(1).split('=')[1];
         if (id) {
           this.$refs.titleMsg.innerText = ""
@@ -127,6 +141,13 @@
         }
       },
       methods: {
+        pushHistory() { //改方法添加了一个历史记录，路径为#，保证了不刷新页面，不直接后退。
+          var state = {
+            title: "title",
+            url: "?id=1"
+          };
+          window.history.pushState(state, "title", "?id=1");
+        },
         initEditor() {
 
           this.openOrCloseEditor('title', true);
@@ -184,16 +205,14 @@
         // 重做
         redo() {
           document.execCommand('redo');
-          this.getFocus();
         },
         // 撤销
         undo() {
           document.execCommand('undo');
-          this.getFocus();
         },
         // 获取焦点
         getFocus() {
-            document.querySelector('#editor').focus();
+          document.querySelector('#editor').focus();
 
         },
         //封装函数
@@ -204,6 +223,16 @@
 
         // 发送
         send() {
+          vant.Dialog.confirm({
+              title: '提示',
+              message: '您还没有保存哦，是否保存为草稿？',
+            })
+            .then(() => {
+              // on confirm
+            })
+            .catch(() => {
+              // on cancel
+            });
           let text = this.$refs.titleMsg.innerText;
           let title = this.getContent('title');
           let editor = this.getContent('editor');
@@ -264,16 +293,15 @@
         },
         // 键盘弹起，功能栏顶起
         topTab() {
+          this.showTab = true;
           let u = navigator.userAgent;
           let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
           if (isIOS) {
-            // let height = document.documentElement.clientHeight || document.body.clientHeight;
-            // let height = document.documentElement.innerHeight || document.body.innerHeight;
-            let height = document.documentElement.scrollTop || document.body.scrollTop;
-            document.querySelector('#tab').style.bottom = (height + 630) / 75 + 'rem'
-          // document.querySelector("#tab").scrollIntoView(false);
+
+            // document.querySelector("#editor").scrollIntoView(false);
 
           }
+
 
         },
         // 恢复默认高度
@@ -281,12 +309,19 @@
           let u = navigator.userAgent;
           let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
           if (isIOS) {
-            document.querySelector('#tab').style.bottom = 0;
+            // document.querySelector('#app').style.height = 100 + 'vh'
+            // document.querySelector('#tab').style.bottom = 0;
+            // document.querySelector('html').style.height = (375 / 2) / 75 + 'rem ';
+            // document.querySelector('body').style.height = (375 / 2) / 75 + 'rem ';
+            // document.querySelector('#app').style.height = (375 / 2) / 75 + 'rem ';
+            // document.querySelector('#tab').style.bottom = (Number(height) - 230) / 75 + 'rem';
           }
+
         },
         getNewTop(e) {
-
-            // 尝试获取输入是的高度
+          console.log(e.target.scrollHeight)
+          console.log(e)
+          // 尝试获取输入是的高度
 
 
 
@@ -296,9 +331,42 @@
           // let u = navigator.userAgent;
           // let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
           // if (isIOS) {
-            this.topTab()
+          this.topTab()
 
           // }
+        },
+        focusin() {
+          document.body.addEventListener('focusin', () => {
+            //软键盘弹出的事件处理
+            // alert('弹出')
+            let height = document.documentElement.clientHeight || document.body.clientHeight;
+
+            // let height = document.documentElement.innerHeight || document.body.innerHeight;
+            // let height = document.documentElement.scrollTop || document.body.scrollTop;
+            let u = navigator.userAgent;
+            let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+            if (isIOS) {
+              // document.querySelector('#app').style.height = 100 + 'vh'
+              // document.querySelector('#tab').style.bottom = 0;
+              // document.querySelector('html').style.height = (375 / 2) / 75 + 'rem ';
+              // document.querySelector('body').style.height = (375 / 2) / 75 + 'rem ';
+              // document.querySelector('#app').style.height = (375 / 2) / 75 + 'rem ';
+              // document.querySelector('#tab').style.bottom = (Number(height) - 230) / 75 + 'rem';
+              // document.querySelector('#editor').style.height = 60 + '%'
+            }
+
+          })
+        },
+        focusout() {
+          document.body.addEventListener('focusout', () => {
+            //软键盘收起的事件处理
+            this.showTab = false;
+            document.querySelector('#app').style.height = 100 + 'vh'
+            document.querySelector('#tab').style.bottom = 0;
+          })
+        },
+        beforeDestroy() {
+          alert('卢本伟牛逼')
         }
       }
     });
