@@ -10,6 +10,12 @@
   <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/vant.css">
   <link rel="stylesheet" href="http://tk.taihaomai.vip/assets/css/hg/release.css">
   <style>
+    #title {
+      padding: .266667rem
+        /* 20/75 */
+        0;
+    }
+
     #editor {
       padding: .4rem
         /* 30/75 */
@@ -17,7 +23,7 @@
         /* 30/75 */
         0;
 
-      height: 29vh;
+      height: 60vh;
       overflow: scroll;
     }
 
@@ -51,7 +57,7 @@
       <span class="warn" v-if="show">{{info}}</span>
     </div>
 
-    <div id="editor" placeholder="请开始你的创作！" ref="contentMsg" @focus="topTab" @blur="bottomTab" @keyup="getNewTop"></div>
+    <div id="editor" placeholder="请开始你的创作！" ref="contentMsg" @keyup="getTap"></div>
     <div>
       <!-- 状态栏 -->
       <ul class="flex-left tabList" v-if="showTab" id="tab">
@@ -76,10 +82,10 @@
           <img src="http://tk.taihaomai.vip/assets/images/img/youxu1.png" alt="" v-on:click.stop="array" v-else>
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click.stop="undo">
+          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click.stop="redo">
         </li>
         <li class="flex-center">
-          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click.stop="redo">
+          <img src="http://tk.taihaomai.vip/assets/images/img/fanhui.png" alt="" @click.stop="undo">
         </li>
       </ul>
       <div class="send" @click="send">发布</div>
@@ -199,7 +205,6 @@
         // 有序
         array(e) {
           // alert(111)
-          e.stopPropagation()
           this.getFocus();
           this.isArray = !this.isArray;
           this.isNoArray = false;
@@ -209,16 +214,30 @@
         // 重做
         redo() {
           document.execCommand('redo');
+          this.getFocus();
         },
         // 撤销
         undo() {
           document.execCommand('undo');
+          this.getFocus();
         },
         // 获取焦点
         getFocus() {
-          document.querySelector('#editor').focus();
 
+          document.querySelector('#editor').focus();
+          setTimeout(() => {
+            scrollTo(0, 80)
+            let agent = navigator.userAgent.toLowerCase();
+            let android = agent.indexOf("android");
+            let iphone = agent.indexOf("iphone");
+            if (iphone) {
+              document.querySelector('#editor').style.height = 40 + 'vh'
+            } else if (android) {
+              document.querySelector('#editor').style.height = 60 + 'vh'
+            }
+          }, 100)
         },
+
         //封装函数
         getContent(el) {
           let editor = document.getElementById(el);
@@ -227,7 +246,7 @@
 
         // 发送
         send() {
-       
+
           let text = this.$refs.titleMsg.innerText;
           let title = this.getContent('title');
           let editor = this.getContent('editor');
@@ -277,6 +296,7 @@
           axios.post(url, data).then(res => {
             console.log(res)
             if (res.data.status = "ok") {
+
               vant.Toast('已提交审核，审核通过后发布');
               window.location.href = "http://tk.taihaomai.vip";
             } else {
@@ -286,66 +306,33 @@
             console.log(err)
           });
         },
-        // 键盘弹起，功能栏顶起
-        topTab() {
-          this.showTab = true;
-          let u = navigator.userAgent;
-          let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-          if (isIOS) {
 
-            // document.querySelector("#editor").scrollIntoView(false);
-
-          }
-
-
-        },
-        // 恢复默认高度
-        bottomTab() {
-          let u = navigator.userAgent;
-          let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-          if (isIOS) {
-            // document.querySelector('#app').style.height = 100 + 'vh'
-            // document.querySelector('#tab').style.bottom = 0;
-            // document.querySelector('html').style.height = (375 / 2) / 75 + 'rem ';
-            // document.querySelector('body').style.height = (375 / 2) / 75 + 'rem ';
-            // document.querySelector('#app').style.height = (375 / 2) / 75 + 'rem ';
-            // document.querySelector('#tab').style.bottom = (Number(height) - 230) / 75 + 'rem';
-          }
-
-        },
-        getNewTop() {
-          
-          // document.querySelector('#editor').scrollIntoView()
+        getTap(){
+          document.querySelector('#editor').scrollIntoView()
         },
         focusin() {
           document.body.addEventListener('focusin', () => {
             //软键盘弹出的事件处理
-            // alert('弹出')
-            let height = document.documentElement.clientHeight || document.body.clientHeight;
-
-            // let height = document.documentElement.innerHeight || document.body.innerHeight;
-            // let height = document.documentElement.scrollTop || document.body.scrollTop;
-            let u = navigator.userAgent;
-            let isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
-            if (isIOS) {
-              // document.querySelector('html').style.height = (375 / 2) / 75 + 'rem ';
-              // document.querySelector('body').style.height = (375 / 2) / 75 + 'rem ';
-              // document.querySelector('#app').style.height = (375 / 2) / 75 + 'rem ';
-              // document.querySelector('#tab').style.bottom = (Number(height) - 230) / 75 + 'rem';
-              // document.querySelector('#editor').style.height = 26 + 'vh'
-            }
+            setTimeout(() => {
+              scrollTo(0, 80)
+              let agent = navigator.userAgent.toLowerCase();
+              let android = agent.indexOf("android");
+              let iphone = agent.indexOf("iphone");
+              if (iphone) {
+                document.querySelector('#editor').style.height = 40 + 'vh'
+              } else if (android) {
+                document.querySelector('#editor').style.height = 60 + 'vh'
+              }
+            }, 100)
 
           })
         },
         focusout() {
           document.body.addEventListener('focusout', (e) => {
-              // e.stopPropagation()
             //软键盘收起的事件处理
-            // this.showTab = false;
-            setTimeout(()=>{
-              document.querySelector('#editor').style.height = 29 + 'vh';
-
-            },10)
+            setTimeout(() => {
+              scrollTo(0, 0)
+            }, 100)
           })
         }
       }
